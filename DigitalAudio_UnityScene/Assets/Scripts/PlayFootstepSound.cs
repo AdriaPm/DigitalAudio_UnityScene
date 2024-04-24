@@ -5,8 +5,10 @@ using UnityEngine.Audio;
 
 public class PlayFootstepSound : MonoBehaviour
 {
-    public AudioClip[] footstepsOnGrass;
+    public AudioClip[] footstepsOnGround;
     public AudioClip[] footstepsOnWood;
+    public AudioClip[] footstepsOnFloor;
+    public AudioClip[] footstepsOnRock;
     
     public string material;
 
@@ -17,14 +19,22 @@ public class PlayFootstepSound : MonoBehaviour
      
         switch(material)
         {
-            case "Grass":
-            myAudioSource.PlayOneShot(footstepsOnGrass[Random.Range(0, footstepsOnGrass.Length)]);
+            case "Ground":
+            myAudioSource.PlayOneShot(footstepsOnGround[Random.Range(0, footstepsOnGround.Length)]);
             break;
 
             case "Wood":
             myAudioSource.PlayOneShot(footstepsOnWood[Random.Range(0, footstepsOnWood.Length)]);
             break;
+
+            case "Floor":
+            myAudioSource.PlayOneShot(footstepsOnFloor[Random.Range(0, footstepsOnFloor.Length)]);
+            break;
             
+            case "Rock":
+            myAudioSource.PlayOneShot(footstepsOnRock[Random.Range(0, footstepsOnRock.Length)]);
+            break;
+
             default:
             break;
         }
@@ -36,8 +46,10 @@ public class PlayFootstepSound : MonoBehaviour
     {
         switch(collison.gameObject.tag)
         {
-            case "Grass":
+            case "Ground":
             case "Wood":
+            case "Floor":
+            case "Rock":
             material = collison.gameObject.tag;
             break;
 
