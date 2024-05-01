@@ -1,14 +1,16 @@
 using UnityEngine;
+using UnityEngine.UI;
 
-public class ToggleAudioOnKey : MonoBehaviour
+public class ToggleAudioOnProximity : MonoBehaviour
 {
     public float activationDistance = 3f; // Distance to activate the audio source
-    public KeyCode enableKey = KeyCode.E; // Key to enable the audio
-    public KeyCode disableKey = KeyCode.D; // Key to disable the audio
+    public Button enableButton; // Reference to the UI button to enable audio
+    public Button disableButton; // Reference to the UI button to disable audio
 
     private GameObject player;
     private AudioSource audioSource;
     private bool audioEnabled = false;
+    private bool enableButtonPressed = false;
 
     void Start()
     {
@@ -19,6 +21,10 @@ public class ToggleAudioOnKey : MonoBehaviour
         // Start with volume at 0
         audioSource.volume = 0f;
         audioSource.loop = true;
+
+        // Hide both buttons initially
+        enableButton.gameObject.SetActive(false);
+        disableButton.gameObject.SetActive(false);
     }
 
     void Update()
@@ -26,20 +32,34 @@ public class ToggleAudioOnKey : MonoBehaviour
         // Check if the player is within activation distance
         if (Vector3.Distance(transform.position, player.transform.position) <= activationDistance)
         {
-            // Check if the enable key is pressed
-            if (Input.GetKeyDown(enableKey))
-            {
-                audioEnabled = true;
-                audioSource.volume = 1f;
-                audioSource.Play();
-            }
-
-            // Check if the disable key is pressed
-            if (Input.GetKeyDown(disableKey))
-            {
-                audioEnabled = false;
-                audioSource.volume = 0f;
-            }
+            // Show the enable button only if it hasn't been pressed yet
+            if (!enableButtonPressed)
+                enableButton.gameObject.SetActive(true);
         }
+        else
+        {
+            // Hide both buttons if the player is not in proximity
+            enableButton.gameObject.SetActive(false);
+            disableButton.gameObject.SetActive(false);
+        }
+    }
+
+    public void EnableAudio()
+    {
+        audioEnabled = true;
+        audioSource.volume = 1f;
+        audioSource.Play();
+        enableButton.gameObject.SetActive(false);
+        disableButton.gameObject.SetActive(true);
+        enableButtonPressed = true;
+    }
+
+    public void DisableAudio()
+    {
+        audioEnabled = false;
+        audioSource.volume = 0f;
+        enableButton.gameObject.SetActive(true);
+        disableButton.gameObject.SetActive(false);
+        enableButtonPressed = false;
     }
 }

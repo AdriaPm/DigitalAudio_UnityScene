@@ -6,15 +6,17 @@ public class MusicManager : MonoBehaviour
 {
     public AudioSource safeMusic;
     public AudioSource dangerMusic;
-    public TextMeshProUGUI musicText; // Reference to the TextMeshProUGUI UI element
+    public AudioSource tavernMusic;
+    public TextMeshProUGUI musicText;
 
     public float crossfadeDuration = 2.0f;
 
     private bool isCrossfading = false;
+    private bool isInTavern = false;
 
     void Start()
     {
-        UpdateMusicText("Safe"); // Start with "Safe" text
+        UpdateMusicText("Safe");
     }
 
     private void OnTriggerEnter(Collider other)
@@ -24,6 +26,11 @@ public class MusicManager : MonoBehaviour
             Debug.Log("Player entered dangerous area. Switching to danger music.");
             SwitchToDangerMusic();
             UpdateMusicText("Danger");
+        }
+        else if (other.CompareTag("Tavern"))
+        {
+            Debug.Log("Player entered tavern. Playing tavern music.");
+            EnterTavern();
         }
     }
 
@@ -35,11 +42,33 @@ public class MusicManager : MonoBehaviour
             SwitchToSafeMusic();
             UpdateMusicText("Safe");
         }
+        else if (other.CompareTag("Tavern"))
+        {
+            Debug.Log("Player exited tavern. Stopping tavern music.");
+            ExitTavern();
+        }
+    }
+
+    private void EnterTavern()
+    {
+        StopSafeMusic();
+        StopDangerMusic();
+        tavernMusic.Play();
+        isInTavern = true;
+        UpdateMusicText("Tavern");
+    }
+
+    private void ExitTavern()
+    {
+        tavernMusic.Stop();
+        isInTavern = false;
+        UpdateMusicText("Safe"); // Update the text back to "Safe"
+        SwitchToSafeMusic();
     }
 
     private void SwitchToSafeMusic()
     {
-        if (!safeMusic.isPlaying)
+        if (!isInTavern && !safeMusic.isPlaying)
         {
             if (isCrossfading)
             {
@@ -51,7 +80,7 @@ public class MusicManager : MonoBehaviour
 
     private void SwitchToDangerMusic()
     {
-        if (!dangerMusic.isPlaying)
+        if (!isInTavern && !dangerMusic.isPlaying)
         {
             if (isCrossfading)
             {
@@ -61,7 +90,23 @@ public class MusicManager : MonoBehaviour
         }
     }
 
-    IEnumerator Crossfade(AudioSource fadeIn, AudioSource fadeOut, float duration)
+    private void StopSafeMusic()
+    {
+        if (safeMusic.isPlaying)
+        {
+            safeMusic.Stop();
+        }
+    }
+
+    private void StopDangerMusic()
+    {
+        if (dangerMusic.isPlaying)
+        {
+            dangerMusic.Stop();
+        }
+    }
+
+    private IEnumerator Crossfade(AudioSource fadeIn, AudioSource fadeOut, float duration)
     {
         isCrossfading = true;
         float startTime = Time.time;
@@ -84,7 +129,6 @@ public class MusicManager : MonoBehaviour
 
     private void UpdateMusicText(string text)
     {
-        // Update the TextMeshProUGUI with the provided text
         if (musicText != null)
         {
             musicText.text = text;
