@@ -27,24 +27,6 @@ public class MoveObjectToDestination : MonoBehaviour
         objectToMove.transform.position = destinations[currentIndex].position;
     }
 
-    public void MoveToNextDestination()
-    {
-        // Increment the index and wrap around if necessary
-        currentIndex = (currentIndex + 1) % destinations.Length;
-
-        // Move the object to the new destination
-        objectToMove.transform.position = destinations[currentIndex].position;
-    }
-
-    public void MoveToPreviousDestination()
-    {
-        // Decrement the index and wrap around if necessary
-        currentIndex = (currentIndex - 1 + destinations.Length) % destinations.Length;
-
-        // Move the object to the new destination
-        objectToMove.transform.position = destinations[currentIndex].position;
-    }
-
     public void MoveToDestination(int index)
     {
         // Ensure the index is within the bounds of the destinations array

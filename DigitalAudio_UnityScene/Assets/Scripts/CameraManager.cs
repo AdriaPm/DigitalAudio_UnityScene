@@ -48,6 +48,13 @@ public class CameraSwitcher : MonoBehaviour
         }
     }
 
+    public void UISwapCameras()
+    {
+        // Cycle through indices 0 and 1 only
+        int newIndex = currentIndex == 0 ? 1 : 0;
+        SwitchToCamera(newIndex);
+    }
+
     void DisableAllCameras()
     {
         foreach (Camera camera in cameras)
