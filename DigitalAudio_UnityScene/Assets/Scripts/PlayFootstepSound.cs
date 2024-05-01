@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using TMPro;
 
 public class PlayFootstepSound : MonoBehaviour
 {
@@ -11,9 +12,10 @@ public class PlayFootstepSound : MonoBehaviour
     public AudioClip[] footstepsOnRock;
     public AudioClip[] footstepsOnMetal;
 
-    public string material;
-
     private AudioSource myAudioSource;
+    private string material;
+
+    public TextMeshProUGUI materialText; // Reference to the TextMeshProUGUI UI element
 
     void Start()
     {
@@ -63,12 +65,14 @@ public class PlayFootstepSound : MonoBehaviour
             case "Metal":
                 material = collision.gameObject.tag;
                 WhenPlayingFootstepSound();
+                UpdateMaterialText(material);
                 break;
 
             case "Indoor":
                 material = collision.gameObject.tag;
                 Debug.Log("Player entered indoor area. Applying reverb and echo to footstep sound.");
                 AddReverbAndEcho();
+                UpdateMaterialText(material);
                 break;
 
             default:
@@ -81,5 +85,18 @@ public class PlayFootstepSound : MonoBehaviour
         // Add reverb and echo effects to the audio source
         myAudioSource.outputAudioMixerGroup.audioMixer.SetFloat("ReverbWet", 1.0f); // Adjust "ReverbWet" parameter to apply reverb
         myAudioSource.outputAudioMixerGroup.audioMixer.SetFloat("EchoWet", 1.0f); // Adjust "EchoWet" parameter to apply echo
+    }
+
+    private void UpdateMaterialText(string text)
+    {
+        // Update the TextMeshProUGUI with the provided text
+        if (materialText != null)
+        {
+            materialText.text = text;
+        }
+        else
+        {
+            Debug.LogWarning("TextMeshProUGUI UI element is not assigned!");
+        }
     }
 }

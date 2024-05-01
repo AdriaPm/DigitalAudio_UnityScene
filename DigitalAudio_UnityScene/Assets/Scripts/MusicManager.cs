@@ -1,14 +1,21 @@
 using UnityEngine;
+using TMPro;
 using System.Collections;
 
 public class MusicManager : MonoBehaviour
 {
     public AudioSource safeMusic;
     public AudioSource dangerMusic;
+    public TextMeshProUGUI musicText; // Reference to the TextMeshProUGUI UI element
 
     public float crossfadeDuration = 2.0f;
 
     private bool isCrossfading = false;
+
+    void Start()
+    {
+        UpdateMusicText("Safe"); // Start with "Safe" text
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -16,6 +23,7 @@ public class MusicManager : MonoBehaviour
         {
             Debug.Log("Player entered dangerous area. Switching to danger music.");
             SwitchToDangerMusic();
+            UpdateMusicText("Danger");
         }
     }
 
@@ -25,6 +33,7 @@ public class MusicManager : MonoBehaviour
         {
             Debug.Log("Player exited dangerous area. Switching back to safe music.");
             SwitchToSafeMusic();
+            UpdateMusicText("Safe");
         }
     }
 
@@ -71,5 +80,18 @@ public class MusicManager : MonoBehaviour
 
         fadeOut.Stop();
         isCrossfading = false;
+    }
+
+    private void UpdateMusicText(string text)
+    {
+        // Update the TextMeshProUGUI with the provided text
+        if (musicText != null)
+        {
+            musicText.text = text;
+        }
+        else
+        {
+            Debug.LogWarning("TextMeshProUGUI UI element is not assigned!");
+        }
     }
 }
