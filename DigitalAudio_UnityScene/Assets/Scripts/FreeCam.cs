@@ -8,6 +8,7 @@ public class TopDownCamera : MonoBehaviour
     float pitch = 0f;
 
     public float moveSpeed = 5.0f; // Speed of camera movement
+    public float boostMultiplier = 2.0f; // Multiplier for boost speed
     public float rotationSpeed = 2.0f; // Speed of camera rotation
     public float riseSpeed = 5.0f; // Speed of camera rising
     public float descendSpeed = 5.0f; // Speed of camera descending
@@ -29,7 +30,13 @@ public class TopDownCamera : MonoBehaviour
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
 
-        Vector3 movement = new Vector3(horizontalInput, 0, verticalInput) * moveSpeed * Time.deltaTime;
+        float currentMoveSpeed = moveSpeed; // Default move speed
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            currentMoveSpeed *= boostMultiplier; // Apply boost multiplier if shift is pressed
+        }
+
+        Vector3 movement = new Vector3(horizontalInput, 0, verticalInput) * currentMoveSpeed * Time.deltaTime;
         transform.Translate(movement);
 
         yaw += mouseSensibility * Input.GetAxis("Mouse X");
